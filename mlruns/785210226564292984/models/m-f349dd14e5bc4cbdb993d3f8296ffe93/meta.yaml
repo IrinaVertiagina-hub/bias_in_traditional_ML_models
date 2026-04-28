@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/higgs/Desktop/study/BiasAI/bias_in_traditional_ML_models/mlruns/785210226564292984/models/m-f349dd14e5bc4cbdb993d3f8296ffe93/artifacts
+creation_timestamp: 1777403364571
+experiment_id: '785210226564292984'
+last_updated_timestamp: 1777403368815
+model_id: m-f349dd14e5bc4cbdb993d3f8296ffe93
+model_type: null
+name: model
+source_run_id: c2d41719aab0413fa5aab4836dcdb8cb
+status: 2
+status_message: null

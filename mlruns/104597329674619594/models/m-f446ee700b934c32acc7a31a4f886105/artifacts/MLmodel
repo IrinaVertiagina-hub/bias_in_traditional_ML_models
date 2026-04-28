@@ -1,0 +1,22 @@
+artifact_path: file:///C:/Users/higgs/Desktop/study/BiasAI/bias_in_traditional_ML_models/mlruns/104597329674619594/models/m-f446ee700b934c32acc7a31a4f886105/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.9.13
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+mlflow_version: 3.1.4
+model_id: m-f446ee700b934c32acc7a31a4f886105
+model_size_bytes: 1225
+model_uuid: m-f446ee700b934c32acc7a31a4f886105
+prompts: null
+run_id: 2b1d04986ee54d6595394e4730ac5bdb
+utc_time_created: '2026-04-28 22:20:45.313271'

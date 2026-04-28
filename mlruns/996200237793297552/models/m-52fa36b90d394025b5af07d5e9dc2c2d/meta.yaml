@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/higgs/Desktop/study/BiasAI/bias_in_traditional_ML_models/mlruns/996200237793297552/models/m-52fa36b90d394025b5af07d5e9dc2c2d/artifacts
+creation_timestamp: 1777414588269
+experiment_id: '996200237793297552'
+last_updated_timestamp: 1777414592184
+model_id: m-52fa36b90d394025b5af07d5e9dc2c2d
+model_type: null
+name: knn_model
+source_run_id: d18d6636e00c416eb60939882cf48123
+status: 2
+status_message: null
