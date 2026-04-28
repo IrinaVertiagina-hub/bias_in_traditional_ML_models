@@ -1,0 +1,31 @@
+{
+  "dataset": "compas",
+  "model": "knn",
+  "params": {
+    "dataset": "compas",
+    "model": "knn",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 5,
+    "min_samples_split": 2,
+    "n_neighbors": 25,
+    "weights": "uniform"
+  },
+  "metrics": {
+    "accuracy_overall": 0.6429924242424242,
+    "accuracy_privileged": 0.6480186480186481,
+    "accuracy_unprivileged": 0.6395534290271132,
+    "privileged_positive_rate": 0.2634032634032634,
+    "unprivileged_positive_rate": 0.5406698564593302,
+    "privileged_predicted_positive": 113,
+    "unprivileged_predicted_positive": 339,
+    "privileged_total": 429,
+    "unprivileged_total": 627,
+    "demographic_parity_difference": -0.27726659305606677,
+    "demographic_parity_ratio": 2.0526315789473686,
+    "equalized_odds_difference": 0.28454758050008994,
+    "equal_opportunity_difference": -0.28454758050008994,
+    "predictive_parity_difference": -0.06489675516224191
+  }
+}

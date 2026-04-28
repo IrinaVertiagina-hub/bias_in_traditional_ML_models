@@ -1,0 +1,31 @@
+{
+  "dataset": "adult",
+  "model": "svm",
+  "params": {
+    "dataset": "adult",
+    "model": "svm",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 5,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "metrics": {
+    "accuracy_overall": 0.8576692768309535,
+    "accuracy_privileged": 0.8208955223880597,
+    "accuracy_unprivileged": 0.9318813716404077,
+    "privileged_positive_rate": 0.2261768082663605,
+    "unprivileged_positive_rate": 0.0778498609823911,
+    "privileged_predicted_positive": 985,
+    "unprivileged_predicted_positive": 168,
+    "privileged_total": 4355,
+    "unprivileged_total": 2158,
+    "demographic_parity_difference": 0.1483269472839694,
+    "demographic_parity_ratio": 0.3441991315515871,
+    "equalized_odds_difference": 0.05459331169735748,
+    "equal_opportunity_difference": 0.034618291761148945,
+    "predictive_parity_difference": -0.01603214890016913
+  }
+}

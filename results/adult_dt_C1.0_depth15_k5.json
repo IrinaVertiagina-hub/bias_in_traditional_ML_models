@@ -1,0 +1,31 @@
+{
+  "dataset": "adult",
+  "model": "dt",
+  "params": {
+    "dataset": "adult",
+    "model": "dt",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 15,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "metrics": {
+    "accuracy_overall": 0.8452326116996776,
+    "accuracy_privileged": 0.8126291618828932,
+    "accuracy_unprivileged": 0.9110287303058388,
+    "privileged_positive_rate": 0.2785304247990815,
+    "unprivileged_positive_rate": 0.1098239110287303,
+    "privileged_predicted_positive": 1213,
+    "unprivileged_predicted_positive": 237,
+    "privileged_total": 4355,
+    "unprivileged_total": 2158,
+    "demographic_parity_difference": 0.16870651377035123,
+    "demographic_parity_ratio": 0.39429771849144307,
+    "equalized_odds_difference": 0.06833280001986133,
+    "equal_opportunity_difference": 0.05820105820105825,
+    "predictive_parity_difference": 0.09717163916919735
+  }
+}

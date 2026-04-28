@@ -17,6 +17,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report
+import json
+import os
 
 from utils import load_dataset, preprocess
 
@@ -202,6 +204,19 @@ def main():
         print(f"  Equal Opportunity Diff:   {metrics['equal_opportunity_difference']:+.4f}  (ideal: 0)")
         print(f"  Predictive Parity Diff:   {metrics['predictive_parity_difference']:+.4f}  (ideal: 0)")
         print(f"\n  MLflow run logged.")
+
+        os.makedirs("results", exist_ok=True)
+        result = {
+            "dataset": args.dataset,
+            "model": args.model,
+            "params": vars(args),
+            "metrics": metrics
+        }
+        filename = f"results/{args.dataset}_{args.model}_C{args.C}_depth{args.max_depth}_k{args.n_neighbors}.json"
+        with open(filename, "w") as f:
+            json.dump(result, f, indent=2)
+        print(f"\n  Results saved: {filename}")
+        
 
 if __name__ == "__main__":
     main()

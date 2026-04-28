@@ -1,0 +1,31 @@
+{
+  "dataset": "compas",
+  "model": "svm",
+  "params": {
+    "dataset": "compas",
+    "model": "svm",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 5,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "metrics": {
+    "accuracy_overall": 0.6590909090909091,
+    "accuracy_privileged": 0.6643356643356644,
+    "accuracy_unprivileged": 0.6555023923444976,
+    "privileged_positive_rate": 0.20512820512820512,
+    "unprivileged_positive_rate": 0.4960127591706539,
+    "privileged_predicted_positive": 88,
+    "unprivileged_predicted_positive": 311,
+    "privileged_total": 429,
+    "unprivileged_total": 627,
+    "demographic_parity_difference": -0.2908845540424488,
+    "demographic_parity_ratio": 2.4180622009569377,
+    "equalized_odds_difference": 0.30996582119086175,
+    "equal_opportunity_difference": -0.30996582119086175,
+    "predictive_parity_difference": -0.03072931891259867
+  }
+}

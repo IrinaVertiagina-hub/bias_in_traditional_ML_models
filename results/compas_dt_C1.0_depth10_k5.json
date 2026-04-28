@@ -1,0 +1,31 @@
+{
+  "dataset": "compas",
+  "model": "dt",
+  "params": {
+    "dataset": "compas",
+    "model": "dt",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 10,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "metrics": {
+    "accuracy_overall": 0.6278409090909091,
+    "accuracy_privileged": 0.6293706293706294,
+    "accuracy_unprivileged": 0.6267942583732058,
+    "privileged_positive_rate": 0.3006993006993007,
+    "unprivileged_positive_rate": 0.48325358851674644,
+    "privileged_predicted_positive": 129,
+    "unprivileged_predicted_positive": 303,
+    "privileged_total": 429,
+    "unprivileged_total": 627,
+    "demographic_parity_difference": -0.18255428781744576,
+    "demographic_parity_ratio": 1.6070991432068547,
+    "equalized_odds_difference": 0.19373988127361041,
+    "equal_opportunity_difference": -0.19373988127361041,
+    "predictive_parity_difference": -0.11082968761992484
+  }
+}

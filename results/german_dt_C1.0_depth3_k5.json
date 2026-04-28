@@ -1,0 +1,31 @@
+{
+  "dataset": "german",
+  "model": "dt",
+  "params": {
+    "dataset": "german",
+    "model": "dt",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 3,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "metrics": {
+    "accuracy_overall": 0.655,
+    "accuracy_privileged": 0.6802325581395349,
+    "accuracy_unprivileged": 0.5,
+    "privileged_positive_rate": 0.5523255813953488,
+    "unprivileged_positive_rate": 0.42857142857142855,
+    "privileged_predicted_positive": 95,
+    "unprivileged_predicted_positive": 12,
+    "privileged_total": 172,
+    "unprivileged_total": 28,
+    "demographic_parity_difference": 0.12375415282392027,
+    "demographic_parity_ratio": 0.7759398496240602,
+    "equalized_odds_difference": 0.22379032258064513,
+    "equal_opportunity_difference": 0.22379032258064513,
+    "predictive_parity_difference": 0.27982456140350875
+  }
+}
