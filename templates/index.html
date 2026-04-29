@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BiasLens — ML Fairness Explorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f5f2eb;
+      --white: #ffffff;
+      --ink: #1a1a2e;
+      --blue: #2563eb;
+      --orange: #f97316;
+      --green: #16a34a;
+      --red: #dc2626;
+      --yellow: #eab308;
+      --purple: #7c3aed;
+      --border: #e2e0d8;
+      --muted: #6b7280;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    header {
+      background: var(--ink);
+      padding: 1.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: #fff; }
+    .logo span { color: var(--orange); }
+    .subtitle { font-size: 0.85rem; color: #9ca3af; font-weight: 300; }
+
+    .container { max-width: 1300px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+    /* CONTROLS */
+    .controls {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .controls-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem; }
+    .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; align-items: end; }
+    .control-group label { display: block; font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem; }
+    .control-group select {
+      width: 100%; padding: 0.65rem 1rem; border: 2px solid var(--border);
+      border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      background: var(--bg); color: var(--ink); cursor: pointer; transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 2.5rem;
+    }
+    .control-group select:focus { outline: none; border-color: var(--blue); }
+
+    .btn-group { display: flex; gap: 0.8rem; }
+    .btn {
+      flex: 1; border: none; padding: 0.7rem 1.2rem; border-radius: 10px;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-baseline { background: var(--ink); color: white; }
+    .btn-baseline:hover { background: #2d2d4e; transform: translateY(-1px); }
+    .btn-mitig { background: var(--green); color: white; }
+    .btn-mitig:hover { background: #15803d; transform: translateY(-1px); }
+
+    /* DATASET BANNER */
+    .dataset-banner {
+      background: var(--ink); color: white; border-radius: 16px;
+      padding: 1.5rem 2rem; margin-bottom: 2rem; display: none;
+    }
+    .dataset-banner.visible { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; }
+    .dataset-banner h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; }
+    .dataset-banner p { font-size: 0.9rem; color: #d1d5db; margin-top: 0.3rem; }
+    .ds-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .ds-tag { background: rgba(255,255,255,0.15); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 500; }
+    .ds-tag.orange { background: var(--orange); }
+
+    /* SECTION */
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem;
+      margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    /* CARDS */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+    .card {
+      background: var(--white); border-radius: 14px; padding: 1.5rem;
+      border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      animation: fadeIn 0.4s ease;
+    }
+    .card-label { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.4rem; }
+    .card-value { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; }
+    .card-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; }
+    .good { color: var(--green); }
+    .bad  { color: var(--red); }
+    .warn { color: var(--orange); }
+
+    /* PRED BARS */
+    .pred-section {
+      background: var(--white); border-radius: 14px; padding: 1.5rem;
+      border: 1px solid var(--border); margin-bottom: 2rem; animation: fadeIn 0.4s ease;
+    }
+    .pred-row { margin-bottom: 1rem; }
+    .pred-label { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 0.4rem; font-weight: 500; }
+    .pred-bar-bg { background: #f3f4f6; border-radius: 6px; height: 12px; overflow: hidden; }
+    .pred-bar-fill { height: 100%; border-radius: 6px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .bar-blue   { background: var(--blue); }
+    .bar-orange { background: var(--orange); }
+
+    /* MITIGATION */
+    .mitig-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; margin-bottom: 2rem; }
+    @media (max-width: 900px) { .mitig-grid { grid-template-columns: 1fr; } }
+    .mitig-card { background: var(--white); border-radius: 14px; padding: 1.5rem; border: 2px solid var(--border); animation: fadeIn 0.4s ease; }
+    .mitig-card.aif360    { border-color: var(--blue); }
+    .mitig-card.fairlearn { border-color: var(--green); }
+    .mitig-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    .badge-baseline  { background: #f3f4f6; color: var(--ink); }
+    .badge-aif360    { background: #dbeafe; color: var(--blue); }
+    .badge-fairlearn { background: #dcfce7; color: var(--green); }
+    .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-name { color: var(--muted); }
+    .metric-val  { font-weight: 700; font-family: 'Syne', sans-serif; }
+
+    /* CHART */
+    .chart-section { background: var(--white); border-radius: 14px; padding: 1.5rem; border: 1px solid var(--border); margin-bottom: 2rem; animation: fadeIn 0.4s ease; }
+    .chart-wrapper { position: relative; height: 320px; }
+
+    .status { text-align: center; padding: 3rem; color: var(--muted); font-size: 0.95rem; }
+    .hidden { display: none; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Bias<span>Lens</span></div>
+    <div class="subtitle">ML Fairness Explorer — Traditional Models</div>
+  </div>
+  <div style="color:#6b7280;font-size:0.8rem;">Adult · COMPAS · German Credit</div>
+</header>
+
+<div class="container">
+
+  <div class="controls">
+    <div class="controls-title">⚙️ Configure Experiment</div>
+    <div class="controls-grid">
+      <div class="control-group">
+        <label>Dataset</label>
+        <select id="sel-dataset">
+          <option value="adult">UCI Adult</option>
+          <option value="compas">COMPAS</option>
+          <option value="german">German Credit</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Model</label>
+        <select id="sel-model" onchange="updateParams()">
+          <option value="lr">Logistic Regression</option>
+          <option value="dt">Decision Tree</option>
+          <option value="svm">SVM</option>
+          <option value="knn">k-NN</option>
+        </select>
+      </div>
+      <div class="control-group" id="group-C">
+        <label>C (Regularization)</label>
+        <select id="sel-C">
+          <option value="0.01">0.01</option>
+          <option value="0.1">0.1</option>
+          <option value="1.0" selected>1.0</option>
+          <option value="10.0">10.0</option>
+          <option value="100.0">100.0</option>
+        </select>
+      </div>
+      <div class="control-group hidden" id="group-depth">
+        <label>Max Depth</label>
+        <select id="sel-depth">
+          <option value="3">3</option>
+          <option value="7" selected>7</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+        </select>
+      </div>
+      <div class="control-group hidden" id="group-k">
+        <label>n_neighbors</label>
+        <select id="sel-k">
+          <option value="3">3</option>
+          <option value="7" selected>7</option>
+          <option value="15">15</option>
+          <option value="25">25</option>
+        </select>
+      </div>
+      <div class="control-group hidden" id="group-kernel">
+        <label>Kernel</label>
+        <select id="sel-kernel">
+          <option value="rbf">RBF</option>
+          <option value="linear">Linear</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>&nbsp;</label>
+        <div class="btn-group">
+          <button class="btn btn-baseline" onclick="runBaseline()">▶ Baseline</button>
+          <button class="btn btn-mitig" onclick="runMitigation()">✦ Mitigation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATASET BANNER -->
+  <div class="dataset-banner" id="ds-banner">
+    <div>
+      <h2 id="ds-name"></h2>
+      <p id="ds-desc"></p>
+      <div class="ds-tags">
+        <span class="ds-tag orange" id="ds-task"></span>
+        <span class="ds-tag" id="ds-samples"></span>
+        <span class="ds-tag" id="ds-protected"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="status hidden" id="status-msg"></div>
+
+  <!-- BASELINE RESULTS -->
+  <div id="baseline-results" class="hidden">
+    <div class="section-title">
+      <span class="dot" style="background:var(--ink)"></span>
+      Baseline — Model Without Mitigation
+    </div>
+    <div class="cards-grid" id="baseline-cards"></div>
+    <div class="pred-section">
+      <div class="section-title" style="margin-bottom:1rem">
+        <span class="dot" style="background:var(--orange)"></span>
+        Prediction Breakdown by Group
+      </div>
+      <div id="pred-bars"></div>
+    </div>
+    <div class="chart-section">
+      <div class="section-title" style="margin-bottom:1rem">
+        <span class="dot" style="background:var(--purple)"></span>
+        Fairness Metrics Overview
+      </div>
+      <div class="chart-wrapper"><canvas id="chart-baseline"></canvas></div>
+    </div>
+  </div>
+
+  <!-- MITIGATION RESULTS -->
+  <div id="mitig-results" class="hidden">
+    <div class="section-title">
+      <span class="dot" style="background:var(--green)"></span>
+      Mitigation — Baseline vs AIF360 vs Fairlearn
+    </div>
+    <div class="mitig-grid" id="mitig-grid"></div>
+    <div class="chart-section">
+      <div class="section-title" style="margin-bottom:1rem">
+        <span class="dot" style="background:var(--blue)"></span>
+        Before vs After Mitigation
+      </div>
+      <div class="chart-wrapper"><canvas id="chart-mitig"></canvas></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let dsInfo = {};
+let chartBaseline = null;
+let chartMitig = null;
+
+fetch('/api/datasets').then(r => r.json()).then(d => { dsInfo = d; });
+
+function updateParams() {
+  const model = document.getElementById('sel-model').value;
+  document.getElementById('group-C').classList.toggle('hidden', model === 'dt' || model === 'knn');
+  document.getElementById('group-depth').classList.toggle('hidden', model !== 'dt');
+  document.getElementById('group-k').classList.toggle('hidden', model !== 'knn');
+  document.getElementById('group-kernel').classList.toggle('hidden', model !== 'svm');
+}
+
+function getParams() {
+  return {
+    dataset:     document.getElementById('sel-dataset').value,
+    model:       document.getElementById('sel-model').value,
+    C:           document.getElementById('sel-C').value,
+    max_depth:   document.getElementById('sel-depth').value,
+    n_neighbors: document.getElementById('sel-k').value,
+    kernel:      document.getElementById('sel-kernel').value,
+  };
+}
+
+function showBanner(dataset) {
+  const info = dsInfo[dataset];
+  if (!info) return;
+  document.getElementById('ds-name').textContent = info.name;
+  document.getElementById('ds-desc').textContent = info.description;
+  document.getElementById('ds-task').textContent = info.task;
+  document.getElementById('ds-samples').textContent = info.samples.toLocaleString() + ' samples';
+  document.getElementById('ds-protected').textContent = 'Protected: ' + info.protected;
+  document.getElementById('ds-banner').classList.add('visible');
+}
+
+function runBaseline() {
+  const p = getParams();
+  showBanner(p.dataset);
+  showStatus('Loading baseline...');
+  document.getElementById('mitig-results').classList.add('hidden');
+
+  const url = `/api/baseline?dataset=${p.dataset}&model=${p.model}&C=${p.C}&max_depth=${p.max_depth}&n_neighbors=${p.n_neighbors}`;
+  fetch(url)
+    .then(r => { if (!r.ok) throw new Error('No baseline result found for these parameters'); return r.json(); })
+    .then(data => {
+      hideStatus();
+      renderBaseline(data, p.dataset);
+    })
+    .catch(err => showStatus('❌ ' + err.message));
+}
+
+function runMitigation() {
+  const p = getParams();
+  showBanner(p.dataset);
+  showStatus('Loading mitigation results...');
+  document.getElementById('baseline-results').classList.add('hidden');
+
+  const url = `/api/mitigation?dataset=${p.dataset}&model=${p.model}&C=${p.C}&max_depth=${p.max_depth}&n_neighbors=${p.n_neighbors}`;
+  fetch(url)
+    .then(r => { if (!r.ok) throw new Error('No mitigation result found for these parameters'); return r.json(); })
+    .then(data => {
+      hideStatus();
+      renderMitigation(data, p.dataset);
+    })
+    .catch(err => showStatus('❌ ' + err.message));
+}
+
+function humanDPD(dpd, priv, unpriv) {
+  const pct = Math.abs(dpd * 100).toFixed(1);
+  if (Math.abs(dpd) < 0.05) return `Model predicts positive outcome almost equally for both groups.`;
+  if (dpd > 0) return `Model predicts positive outcome for ${priv} ${pct}% more often than ${unpriv}.`;
+  return `Model predicts positive outcome for ${unpriv} ${pct}% more often than ${priv}.`;
+}
+function humanDPR(dpr, priv, unpriv) {
+  const pctOfPriv = (dpr * 100).toFixed(1);
+  if (dpr >= 0.8 && dpr <= 1.2) return `${unpriv} gets positive prediction at ${pctOfPriv}% the rate of ${priv} — passes the 80% rule.`;
+  if (dpr < 0.8) return `${unpriv} gets positive prediction at only ${pctOfPriv}% the rate of ${priv} — far below the 80% rule threshold.`;
+  return `${unpriv} gets positive prediction at ${pctOfPriv}% the rate of ${priv}.`;
+}
+function humanEOD(eod) {
+  const p = (Math.abs(eod) * 100).toFixed(1);
+  if (Math.abs(eod) < 0.05) return `Model correctly identifies truly positive cases at a similar rate for both groups — fair.`;
+  return `Of all people who truly deserve a positive outcome, the model finds them ${p}% more often in one group than the other.`;
+}
+
+function renderBaseline(data, dataset) {
+  const info   = dsInfo[dataset] || {};
+  const priv   = info.privileged   || 'Privileged';
+  const unpriv = info.unprivileged || 'Unprivileged';
+  const b = data.metrics || data;
+
+  const dpd = b.demographic_parity_difference;
+  const dpr = b.demographic_parity_ratio;
+  const cards = [
+    { label: 'Overall Accuracy',         value: pct(b.accuracy_overall),               cls: 'good',                              sub: 'Model accuracy on test set', human: '' },
+    { label: 'Demographic Parity Diff',  value: fmt(dpd),                              cls: biasColor(Math.abs(dpd),0.05,0.1),   sub: 'Ideal: 0',         human: humanDPD(dpd, priv, unpriv) },
+    { label: 'Demographic Parity Ratio', value: dpr.toFixed(3),                        cls: (dpr>=0.8 && dpr<=1.25)?'good':(dpr>=0.6 && dpr<=1.5)?'warn':'bad',               sub: 'Ideal: 1.0, >0.8', human: humanDPR(dpr, priv, unpriv) },
+    { label: 'Equalized Odds Diff',      value: fmt(b.equalized_odds_difference),      cls: biasColor(b.equalized_odds_difference,0.05,0.1), sub: 'Ideal: 0', human: humanEOD(b.equalized_odds_difference) },
+    { label: 'Accuracy ('+priv+')',      value: pct(b.accuracy_privileged),            cls: '', sub: '', human: '' },
+    { label: 'Accuracy ('+unpriv+')',    value: pct(b.accuracy_unprivileged),          cls: '', sub: '', human: '' },
+  ];
+
+  document.getElementById('baseline-cards').innerHTML = cards.map(c => `
+    <div class="card">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value ${c.cls}">${c.value}</div>
+      <div class="card-sub">${c.sub}</div>
+      ${c.human ? `<div style="margin-top:0.6rem;font-size:0.82rem;color:#374151;line-height:1.4;border-top:1px solid #f3f4f6;padding-top:0.6rem;">${c.human}</div>` : ''}
+    </div>`).join('');
+
+  const privRate   = (b.privileged_positive_rate   * 100).toFixed(1);
+  const unprivRate = (b.unprivileged_positive_rate * 100).toFixed(1);
+  document.getElementById('pred-bars').innerHTML = `
+    <div class="pred-row">
+      <div class="pred-label"><span>${priv}</span><span>${b.privileged_predicted_positive} / ${b.privileged_total} (${privRate}%)</span></div>
+      <div class="pred-bar-bg"><div class="pred-bar-fill bar-blue" style="width:${privRate}%"></div></div>
+    </div>
+    <div class="pred-row">
+      <div class="pred-label"><span>${unpriv}</span><span>${b.unprivileged_predicted_positive} / ${b.unprivileged_total} (${unprivRate}%)</span></div>
+      <div class="pred-bar-bg"><div class="pred-bar-fill bar-orange" style="width:${unprivRate}%"></div></div>
+    </div>`;
+
+  if (chartBaseline) chartBaseline.destroy();
+  const ctx = document.getElementById('chart-baseline').getContext('2d');
+  chartBaseline = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Accuracy', 'DPD (abs)', 'Equalized Odds', 'Equal Opportunity (abs)'],
+      datasets: [{
+        label: 'Baseline',
+        data: [b.accuracy_overall, Math.abs(dpd), b.equalized_odds_difference, Math.abs(b.equal_opportunity_difference)],
+        backgroundColor: ['#2563eb','#f97316','#dc2626','#7c3aed'],
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, max: 1, ticks: { callback: v => (v*100).toFixed(0)+'%' } } }
+    }
+  });
+
+  document.getElementById('baseline-results').classList.remove('hidden');
+}
+
+function renderMitigation(data, dataset) {
+  const info   = dsInfo[dataset] || {};
+  const priv   = info.privileged   || 'Privileged';
+  const unpriv = info.unprivileged || 'Unprivileged';
+
+  const sections = [
+    { key: 'baseline',  label: 'Baseline',               badgeClass: 'badge-baseline',  cardClass: '' },
+    { key: 'aif360',    label: 'AIF360 Reweighing',      badgeClass: 'badge-aif360',    cardClass: 'aif360' },
+    { key: 'fairlearn', label: 'Fairlearn ThresholdOpt', badgeClass: 'badge-fairlearn', cardClass: 'fairlearn' },
+  ];
+
+  document.getElementById('mitig-grid').innerHTML = sections.map(s => {
+    const m = data[s.key];
+    const dpd = m.demographic_parity_difference;
+    const dpr = m.demographic_parity_ratio;
+    return `
+    <div class="mitig-card ${s.cardClass}">
+      <span class="mitig-badge ${s.badgeClass}">${s.label}</span>
+      <div class="metric-row"><span class="metric-name">Accuracy</span><span class="metric-val">${pct(m.accuracy_overall)}</span></div>
+      <div class="metric-row"><span class="metric-name">DPD</span><span class="metric-val ${biasColor(Math.abs(dpd),0.05,0.1)}">${fmt(dpd)}</span></div>
+      <div class="metric-row"><span class="metric-name">DPR</span><span class="metric-val ${dpr>=0.8?'good':'bad'}">${dpr.toFixed(3)}</span></div>
+      <div class="metric-row"><span class="metric-name">Equalized Odds</span><span class="metric-val">${fmt(m.equalized_odds_difference)}</span></div>
+      <div class="metric-row"><span class="metric-name">Equal Opportunity</span><span class="metric-val">${fmt(m.equal_opportunity_difference)}</span></div>
+      <div class="metric-row"><span class="metric-name">${priv} rate</span><span class="metric-val">${(m.privileged_positive_rate*100).toFixed(1)}%</span></div>
+      <div class="metric-row"><span class="metric-name">${unpriv} rate</span><span class="metric-val">${(m.unprivileged_positive_rate*100).toFixed(1)}%</span></div>
+    </div>`;
+  }).join('');
+
+  // Chart
+  if (chartMitig) chartMitig.destroy();
+  const ctx = document.getElementById('chart-mitig').getContext('2d');
+  const get = (d) => [
+    Math.abs(d.demographic_parity_difference),
+    d.equalized_odds_difference,
+    Math.abs(d.equal_opportunity_difference),
+    d.accuracy_overall
+  ];
+  chartMitig = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['DPD (abs)', 'Equalized Odds', 'Equal Opportunity (abs)', 'Accuracy'],
+      datasets: [
+        { label: 'Baseline',   data: get(data.baseline),  backgroundColor: '#94a3b8' },
+        { label: 'AIF360',     data: get(data.aif360),    backgroundColor: '#2563eb' },
+        { label: 'Fairlearn',  data: get(data.fairlearn), backgroundColor: '#16a34a' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'top' } },
+      scales: { y: { beginAtZero: true, max: 1, ticks: { callback: v => (v*100).toFixed(0)+'%' } } }
+    }
+  });
+
+  document.getElementById('mitig-results').classList.remove('hidden');
+}
+
+function pct(v)  { return (v * 100).toFixed(1) + '%'; }
+function fmt(v)  { return (v >= 0 ? '+' : '') + v.toFixed(4); }
+function biasColor(abs, good, warn) { return abs <= good ? 'good' : abs <= warn ? 'warn' : 'bad'; }
+function showStatus(msg) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+function hideStatus() { document.getElementById('status-msg').classList.add('hidden'); }
+</script>
+</body>
+</html>
