@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/higgs/Desktop/study/BiasAI/bias_in_traditional_ML_models/mlruns/925486965860411242/a1917948047a45d699c1a039c1f5d8f7/artifacts
+end_time: 1777419188725
+entry_point_name: ''
+experiment_id: '925486965860411242'
+lifecycle_stage: active
+run_id: a1917948047a45d699c1a039c1f5d8f7
+run_name: mitig_svm_compas
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1777419187809
+status: 3
+tags: []
+user_id: higgs

@@ -1,0 +1,63 @@
+{
+  "dataset": "adult",
+  "model": "dt",
+  "params": {
+    "dataset": "adult",
+    "model": "dt",
+    "C": 1.0,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 15,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "baseline": {
+    "accuracy_overall": 0.8452326116996776,
+    "accuracy_privileged": 0.8126291618828932,
+    "accuracy_unprivileged": 0.9110287303058388,
+    "privileged_positive_rate": 0.2785304247990815,
+    "unprivileged_positive_rate": 0.1098239110287303,
+    "privileged_predicted_positive": 1213,
+    "unprivileged_predicted_positive": 237,
+    "privileged_total": 4355,
+    "unprivileged_total": 2158,
+    "demographic_parity_difference": 0.16870651377035123,
+    "demographic_parity_ratio": 0.39429771849144307,
+    "equalized_odds_difference": 0.06833280001986133,
+    "equal_opportunity_difference": 0.05820105820105825,
+    "predictive_parity_difference": 0.09717163916919735
+  },
+  "aif360": {
+    "accuracy_overall": 0.8446184553968985,
+    "accuracy_privileged": 0.8192881745120552,
+    "accuracy_unprivileged": 0.8957367933271547,
+    "privileged_positive_rate": 0.24615384615384617,
+    "unprivileged_positive_rate": 0.14272474513438368,
+    "privileged_predicted_positive": 1072,
+    "unprivileged_predicted_positive": 308,
+    "privileged_total": 4355,
+    "unprivileged_total": 2158,
+    "demographic_parity_difference": 0.10342910101946248,
+    "demographic_parity_ratio": 0.5798192771084337,
+    "equalized_odds_difference": 0.06167800453514738,
+    "equal_opportunity_difference": -0.06167800453514738,
+    "predictive_parity_difference": 0.21753246753246758
+  },
+  "fairlearn": {
+    "accuracy_overall": 0.8243512974051896,
+    "accuracy_privileged": 0.8016073478760046,
+    "accuracy_unprivileged": 0.8702502316960148,
+    "privileged_positive_rate": 0.19035591274397246,
+    "unprivileged_positive_rate": 0.18582020389249304,
+    "privileged_predicted_positive": 829,
+    "unprivileged_predicted_positive": 401,
+    "privileged_total": 4355,
+    "unprivileged_total": 2158,
+    "demographic_parity_difference": 0.004535708851479414,
+    "demographic_parity_ratio": 0.9761724824509134,
+    "equalized_odds_difference": 0.2601662887377173,
+    "equal_opportunity_difference": -0.2601662887377173,
+    "predictive_parity_difference": 0.3204804634974686
+  }
+}

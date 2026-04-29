@@ -1,0 +1,63 @@
+{
+  "dataset": "german",
+  "model": "svm",
+  "params": {
+    "dataset": "german",
+    "model": "svm",
+    "C": 0.1,
+    "max_iter": 1000,
+    "kernel": "rbf",
+    "max_depth": 5,
+    "min_samples_split": 2,
+    "n_neighbors": 5,
+    "weights": "uniform"
+  },
+  "baseline": {
+    "accuracy_overall": 0.7,
+    "accuracy_privileged": 0.7209302325581395,
+    "accuracy_unprivileged": 0.5714285714285714,
+    "privileged_positive_rate": 1.0,
+    "unprivileged_positive_rate": 1.0,
+    "privileged_predicted_positive": 172,
+    "unprivileged_predicted_positive": 28,
+    "privileged_total": 172,
+    "unprivileged_total": 28,
+    "demographic_parity_difference": 0.0,
+    "demographic_parity_ratio": 1.0,
+    "equalized_odds_difference": 0.0,
+    "equal_opportunity_difference": 0.0,
+    "predictive_parity_difference": 0.1495016611295681
+  },
+  "aif360": {
+    "accuracy_overall": 0.7,
+    "accuracy_privileged": 0.7209302325581395,
+    "accuracy_unprivileged": 0.5714285714285714,
+    "privileged_positive_rate": 1.0,
+    "unprivileged_positive_rate": 1.0,
+    "privileged_predicted_positive": 172,
+    "unprivileged_predicted_positive": 28,
+    "privileged_total": 172,
+    "unprivileged_total": 28,
+    "demographic_parity_difference": 0.0,
+    "demographic_parity_ratio": 1.0,
+    "equalized_odds_difference": 0.0,
+    "equal_opportunity_difference": 0.0,
+    "predictive_parity_difference": 0.1495016611295681
+  },
+  "fairlearn": {
+    "accuracy_overall": 0.705,
+    "accuracy_privileged": 0.7151162790697675,
+    "accuracy_unprivileged": 0.6428571428571429,
+    "privileged_positive_rate": 0.6337209302325582,
+    "unprivileged_positive_rate": 0.8571428571428571,
+    "privileged_predicted_positive": 109,
+    "unprivileged_predicted_positive": 24,
+    "privileged_total": 172,
+    "unprivileged_total": 28,
+    "demographic_parity_difference": -0.22342192691029894,
+    "demographic_parity_ratio": 1.3525557011795544,
+    "equalized_odds_difference": 0.3958333333333333,
+    "equal_opportunity_difference": -0.19556451612903225,
+    "predictive_parity_difference": 0.21903669724770647
+  }
+}
